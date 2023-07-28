@@ -12,9 +12,7 @@
 // @grant        none
 // ==/UserScript==
 
-let learning;
-let videoElement;
-
+let instance = null;
 
 (function () {
     'use strict';
@@ -34,38 +32,108 @@ let videoElement;
 })();
 
 
+
+
 function study() {
 
-    videoElement = document.querySelector("video");
-    videoElement.muted = true;
+    let VideoStudy = (function () {
+
+
+
+        function VideoStudy(chapterList) {
+            // 章节学习中
+            this.index = 0
+            this.chapterStudying = false
+            this.chapterList = chapterList
+            this.currentChapter = chapterList[this.index]
+            let videoElement = document.querySelector("video");
+            videoElement.muted = true;
+
+
+            this.studyVideo = function () {
+                if (!this.chapterStudying){
+                    this.currentChapter.click()
+                }
+
+                this.chapterStudying = true;
+            }
+
+
+            /**
+             * 开始刷课，幂等
+             */
+            this.start = function () {
+                while (this.chapterFinish()) {
+                    // 当前章节已经完成,下一个章节
+                    this.next()
+                    this.chapterStudying = false
+                }
+
+                if (this.finished()) {
+                    // 所有章节都已经完成，点击课程评估
+                    this.clickCourseEvaluate()
+                }
+
+                // 开始学习当前课程
+                this.studyVideo()
+            }
+
+
+            this.chapterFinish = function () {
+                if (this.currentChapter === null) {
+                    return false;
+                }
+                return this.currentChapter.classList.contains("cl-catalog-link-done");
+            }
+
+            this.finished = function () {
+                return this.currentChapter === null;
+            }
+
+
+            this.next = function () {
+                if (this.index === this.chapterList.length - 1) {
+                    return null;
+                }
+                this.currentChapter = this.chapterList[++this.index]
+            }
+
+            this.clickCourseEvaluate = function () {
+                let linkEleList = document.querySelectorAll(".cs-menu-link");
+                for (let i = 0; i < linkEleList.length; i++) {
+                    if (linkEleList[i].innerText === "2.课程评估") {
+                        linkEleList[i].click()
+                        break;
+                    }
+                }
+            }
+        }
+
+        return {
+            getSingletonInstance: function (chapterList) {
+                if (instance) {
+                    return instance;
+                }
+
+                instance = new VideoStudy(chapterList)
+                return instance
+            }
+        }
+    }())
+
+    // videoElement = document.querySelector("video");
+    // videoElement.muted = true;
 
     let chapterListEle = document.querySelector(".cl-catalog-item");
-    if (!chapterListEle || learning) {
+    if (!chapterListEle) {
         return;
     }
 
-    // 视频学习中 状态
-    let videoLearning = false;
     let chapterList = chapterListEle.querySelectorAll("a");
-    for (let i = 0; i < chapterList.length; i++) {
-        let chapterItem = chapterList[i];
-        // 完成标记
-        let finishFlag = chapterItem.classList.contains("cl-catalog-link-done");
-        if (!finishFlag) {
-            chapterItem.click()
-            learning = videoLearning = true;
-            console.log("开始学习：" + chapterItem.title)
-            break;
-        }
-        console.log("已完成：" + chapterItem.title)
-    }
+    //  开始学习
+    VideoStudy.getSingletonInstance(chapterList).start();
 
-    // 没有点击任何课程，说明学习完毕
-    if (!videoLearning) {
-        console.log("课程学习完毕")
-        // 点击课程评估
-        clickCourseEvaluate()
-    }
+
 }
 
 
@@ -120,3 +188,84 @@ function selectCourse() {
 function goCourse() {
     document.querySelector("#goStudy").click()
 }
+
+
+let VideoStudy = (function () {
+
+    let instance = null;
+
+    function VideoStudy(chapterList) {
+        // 章节学习中
+        this.index = 0
+        this.chapterStudying = false
+        this.chapterList = chapterList
+        this.currentChapter = chapterList[this.index]
+        let videoElement = document.querySelector("video");
+        videoElement.muted = true;
+
+
+        this.studyVideo = function () {
+            this.currentChapter.click()
+            this.chapterStudying = true;
+        }
+
+
+        /**
+         * 开始刷课，幂等
+         */
+        this.start = function () {
+            while (this.chapterFinish()) {
+                // 当前章节已经完成,下一个章节
+                this.next()
+            }
+
+            if (this.finished()) {
+                // 所有章节都已经完成，点击课程评估
+                this.clickCourseEvaluate()
+            }
+
+            // 开始学习当前课程
+            this.studyVideo()
+        }
+
+
+        this.chapterFinish = function () {
+            if (currentChapter === null) {
+                return false;
+            }
+            return currentChapter.classList.contains("cl-catalog-link-done");
+        }
+
+        this.finished = function () {
+            return currentChapter === null;
+        }
+
+
+        this.next = function () {
+            if (this.index === this.chapterList.length - 1) {
+                return null;
+            }
+            return this.chapterList[++this.index]
+        }
+
+        this.clickCourseEvaluate = function () {
+            let linkEleList = document.querySelectorAll(".cs-menu-link");
+            for (let i = 0; i < linkEleList.length; i++) {
+                if (linkEleList[i].innerText === "2.课程评估") {
+                    linkEleList[i].click()
+                    break;
+                }
+            }
+        }
+    }
+
+    return {
+        getSingletonInstance: function (chapterList) {
+            if (instance) {
+                return instance;
+            }
+
+            return new VideoStudy(chapterList)
+        }
+    }
+}())
