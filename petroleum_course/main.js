@@ -230,14 +230,14 @@ let VideoStudy = (function () {
 
 
         this.chapterFinish = function () {
-            if (currentChapter === null) {
+            if (this.currentChapter === null) {
                 return false;
             }
-            return currentChapter.classList.contains("cl-catalog-link-done");
+            return this.currentChapter.classList.contains("cl-catalog-link-done");
         }
 
         this.finished = function () {
-            return currentChapter === null;
+            return this.currentChapter === null;
         }
 
 
