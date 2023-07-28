@@ -6,6 +6,8 @@
 // @author       maple
 // @match        https://e-learning.cnpcint.com/els/html/courseStudyItem/courseStudyItem.learn.do?courseId=*
 // @match        https://e-learning.cnpcint.com/els/html/studyCourse/studyCourse.enterCourse.do?courseId=*
+// @match        https://e-learning.cnpcint.com/els/html/course/course.courseInfo.do?courseId=*
+// @match        https://e-learning.cnpcint.com/rtr-frontend/student/allTask?type=kecheng*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=cnpcint.com
 // @grant        none
 // ==/UserScript==
@@ -16,11 +18,18 @@ let videoElement;
 
 (function () {
     'use strict';
-    // 评估
+    // 评估页面
     if (document.URL.includes("https://e-learning.cnpcint.com/els/html/studyCourse/studyCourse.enterCourse.do?courseId")) {
-        courseEvaluate()
-    } else {
+        setTimeout(courseEvaluate, 500)
+        //    课程学习页面
+    } else if (document.URL.includes("https://e-learning.cnpcint.com/els/html/courseStudyItem/courseStudyItem.learn.do?courseId")) {
         setInterval(study, 1000)
+        //    课程列表
+    } else if (document.URL.includes("https://e-learning.cnpcint.com/rtr-frontend/student/allTask")) {
+        setTimeout(selectCourse, 2000)
+        // 课程详情页
+    } else if (document.URL.includes("https://e-learning.cnpcint.com/els/html/course/course.courseInfo.do?courseId")) {
+        setTimeout(goCourse, 500)
     }
 })();
 
@@ -89,4 +98,25 @@ function courseEvaluate() {
 
     document.querySelector(".layui-layer-btn1").click()
 
+    window.location.href = 'https://e-learning.cnpcint.com/rtr-frontend/student/allTask?type=kecheng'
+}
+
+function selectCourse() {
+    // 所有进度
+    let allScheduleEle = document.querySelectorAll(".status-item");
+    for (let i = 0; i < allScheduleEle.length; i++) {
+        let text = allScheduleEle[i].querySelector("i").innerText;
+        if (text === "课后考试") {
+            continue;
+        }
+
+        console.log(allScheduleEle[i])
+        allScheduleEle[i].click();
+        break;
+    }
+}
+
+
+function goCourse() {
+    document.querySelector("#goStudy").click()
 }
