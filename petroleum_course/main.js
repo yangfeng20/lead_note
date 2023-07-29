@@ -32,12 +32,9 @@ let instance = null;
 })();
 
 
-
-
 function study() {
 
     let VideoStudy = (function () {
-
 
 
         function VideoStudy(chapterList) {
@@ -51,7 +48,7 @@ function study() {
 
 
             this.studyVideo = function () {
-                if (!this.chapterStudying){
+                if (!this.chapterStudying) {
                     this.currentChapter.click()
                 }
 
@@ -80,7 +77,7 @@ function study() {
 
 
             this.chapterFinish = function () {
-                if (this.currentChapter === null) {
+                if (this.currentChapter === null || this.currentChapter === undefined) {
                     return false;
                 }
                 return this.currentChapter.classList.contains("cl-catalog-link-done");
@@ -93,7 +90,7 @@ function study() {
 
             this.next = function () {
                 if (this.index === this.chapterList.length - 1) {
-                    return null;
+                    this.currentChapter = null;
                 }
                 this.currentChapter = this.chapterList[++this.index]
             }
@@ -115,23 +112,28 @@ function study() {
                     return instance;
                 }
 
+                console.log("所有章节列表：")
+                console.log(chapterList)
                 instance = new VideoStudy(chapterList)
                 return instance
             }
         }
     }())
 
-    // videoElement = document.querySelector("video");
-    // videoElement.muted = true;
 
-    let chapterListEle = document.querySelector(".cl-catalog-item");
-    if (!chapterListEle) {
+    let chapterListEleList = document.querySelectorAll(".cl-catalog-item");
+    if (!chapterListEleList) {
         return;
     }
 
-    let chapterList = chapterListEle.querySelectorAll("a");
+    let allChapterList = []
+    chapterListEleList.forEach(chapterListEle => {
+        let chapterList = chapterListEle.querySelectorAll("a")
+        chapterList.forEach(item => allChapterList.push(item))
+    })
+
     //  开始学习
-    VideoStudy.getSingletonInstance(chapterList).start();
+    VideoStudy.getSingletonInstance(allChapterList).start();
 
 
 }
