@@ -44,6 +44,8 @@ function study() {
             this.chapterList = chapterList
             this.currentChapter = chapterList[this.index]
             let videoElement = document.querySelector("video");
+            // 最后一个章节超时计数
+            this.timeCount = 0;
             videoElement.muted = true;
 
 
@@ -68,11 +70,22 @@ function study() {
 
                 if (this.finished()) {
                     // 所有章节都已经完成，点击课程评估
+                    console.log("点击评估")
                     this.clickCourseEvaluate()
                 }
 
                 // 开始学习当前课程
                 this.studyVideo()
+
+                this.reload()
+            }
+
+
+            this.reload = function () {
+                // 最后一个章节时，已经看完暂停，页面可能不会刷新章节完成状态，直接超过一分钟刷新
+            if(videoElement.paused && !this.chapterList[this.index + 1] && ++this.timeCount > 10){
+                location.reload()
+            }
             }
 
 
@@ -84,7 +97,7 @@ function study() {
             }
 
             this.finished = function () {
-                return this.currentChapter === null;
+                return this.currentChapter === null || this.currentChapter === undefined;
             }
 
 
@@ -98,7 +111,7 @@ function study() {
             this.clickCourseEvaluate = function () {
                 let linkEleList = document.querySelectorAll(".cs-menu-link");
                 for (let i = 0; i < linkEleList.length; i++) {
-                    if (linkEleList[i].innerText === "2.课程评估") {
+                    if (linkEleList[i].innerText.includes("课程评估")) {
                         linkEleList[i].click()
                         break;
                     }
@@ -139,15 +152,6 @@ function study() {
 }
 
 
-function clickCourseEvaluate() {
-    let linkEleList = document.querySelectorAll(".cs-menu-link");
-    for (let i = 0; i < linkEleList.length; i++) {
-        if (linkEleList[i].innerText === "2.课程评估") {
-            linkEleList[i].click()
-            break;
-        }
-    }
-}
 
 function courseEvaluate() {
     // 总评分
@@ -166,8 +170,6 @@ function courseEvaluate() {
     // 确认提交
     document.querySelector(".layui-layer-btn1").click()
 
-    document.querySelector(".layui-layer-btn1").click()
-
     window.location.href = 'https://e-learning.cnpcint.com/rtr-frontend/student/allTask?type=kecheng'
 }
 
@@ -176,98 +178,20 @@ function selectCourse() {
     let allScheduleEle = document.querySelectorAll(".status-item");
     for (let i = 0; i < allScheduleEle.length; i++) {
         let text = allScheduleEle[i].querySelector("i").innerText;
-        if (text === "课后考试") {
+        if (text === "课后考试" || text === "课前测试") {
             continue;
         }
 
         console.log(allScheduleEle[i])
         allScheduleEle[i].click();
-        break;
+        return;
     }
+
+    document.querySelector(".ant-pagination-next").click()
+    this.selectCourse()
 }
 
 
 function goCourse() {
     document.querySelector("#goStudy").click()
 }
-
-
-let VideoStudy = (function () {
-
-    let instance = null;
-
-    function VideoStudy(chapterList) {
-        // 章节学习中
-        this.index = 0
-        this.chapterStudying = false
-        this.chapterList = chapterList
-        this.currentChapter = chapterList[this.index]
-        let videoElement = document.querySelector("video");
-        videoElement.muted = true;
-
-
-        this.studyVideo = function () {
-            this.currentChapter.click()
-            this.chapterStudying = true;
-        }
-
-
-        /**
-         * 开始刷课，幂等
-         */
-        this.start = function () {
-            while (this.chapterFinish()) {
-                // 当前章节已经完成,下一个章节
-                this.next()
-            }
-
-            if (this.finished()) {
-                // 所有章节都已经完成，点击课程评估
-                this.clickCourseEvaluate()
-            }
-
-            // 开始学习当前课程
-            this.studyVideo()
-        }
-
-
-        this.chapterFinish = function () {
-            if (this.currentChapter === null) {
-                return false;
-            }
-            return this.currentChapter.classList.contains("cl-catalog-link-done");
-        }
-
-        this.finished = function () {
-            return this.currentChapter === null;
-        }
-
-
-        this.next = function () {
-            if (this.index === this.chapterList.length - 1) {
-                return null;
-            }
-            return this.chapterList[++this.index]
-        }
-
-        this.clickCourseEvaluate = function () {
-            let linkEleList = document.querySelectorAll(".cs-menu-link");
-            for (let i = 0; i < linkEleList.length; i++) {
-                if (linkEleList[i].innerText === "2.课程评估") {
-                    linkEleList[i].click()
-                    break;
-                }
-            }
-        }
-    }
-
-    return {
-        getSingletonInstance: function (chapterList) {
-            if (instance) {
-                return instance;
-            }
-
-            return new VideoStudy(chapterList)
-        }
-    }
-}())
