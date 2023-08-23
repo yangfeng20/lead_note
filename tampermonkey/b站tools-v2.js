@@ -182,7 +182,7 @@ class HeJiHandler extends Handler {
 
     getVideoListTimeArr(index) {
         let resultTwoArr = []
-        for (let i = 0; i < this.videoList.length; i++) {
+        for (let i = index; i < this.videoList.length; i++) {
             let videoEle = this.videoList[i];
             let videoTimeStr = videoEle.querySelector(".video-episode-card__info-duration").innerHTML;
 
