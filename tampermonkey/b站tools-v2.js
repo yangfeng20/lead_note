@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         哔哩哔哩工具[快捷键|视频时长]
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  快捷键【c】打开关闭弹幕，跳过充电鸣谢，自动下一个，视频时长统计
 // @author       maple
 // @match        https://www.bilibili.com/*
