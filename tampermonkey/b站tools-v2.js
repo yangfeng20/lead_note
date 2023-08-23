@@ -6,13 +6,13 @@
 // @author       maple
 // @match        https://www.bilibili.com/*
 // @require      https://cdn.bootcss.com/jquery/3.5.0/jquery.min.js
-// @require      https://unpkg.com/maple-lib@1.0.1/log.js
+// @require      https://unpkg.com/maple-lib@1.0.2/log.js
 // @icon         https://www.bilibili.com/favicon.ico
 // @grant        none
 // ==/UserScript==
 "use strict";
 
-let logger = Logger.log("info")
+let logger = Logger.log("debug")
 
 class Handler {
 
