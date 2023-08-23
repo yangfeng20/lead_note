@@ -193,7 +193,6 @@ function format(timeArray) {
 function show(all, undone, number) {
     //找到显示面板
     let plain = document.getElementsByClassName("video-info-detail")[0];
-    plain.removeChild()
 
     let data_tag = document.getElementById("data_tag");
 
