@@ -1,14 +1,46 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket连接示例</title>
 </head>
 <body>
+<h1>WebSocket连接示例</h1>
+<div id="status"></div>
+<div id="messages"></div>
 
-<script src="oop01.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    const socket = new SockJS('http://localhost:7070/csStaff/endpoint/');
+    const stompClient = Stomp.over(socket);
 
+    const statusDiv = document.getElementById('status');
+    const messagesDiv = document.getElementById('messages');
+
+    stompClient.connect(
+        {
+            login: '',
+            passcode: '',
+            'accept-version': '1.1,1.0',
+            'heart-beat': '10000,10000'
+        },
+        function (frame) {
+            statusDiv.innerHTML = '连接成功';
+            console.log('Connected: ' + frame);
+
+            // 订阅主题
+            stompClient.subscribe('/ws/user/101013183/queue/response/csStaffMonitor', function (message) {
+                console.log('Received message:', message.body);
+                messagesDiv.innerHTML += '<p>收到消息: ' + message.body + '</p>';
+            });
+        },
+        function (error) {
+            statusDiv.innerHTML = '连接失败: ' + error;
+            console.error('Connection error:', error);
+        }
+    );
+</script>
 </body>
 </html>

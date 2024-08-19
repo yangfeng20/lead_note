@@ -1,0 +1,25 @@
+
+.flex-div {
+    display: flex;
+    background-color: red;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-item{
+    border: 1px solid gray;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.flex-item:nth-child(2){
+    flex: 2;
+}
+
+
+.grid-div{
+    display: grid;
+    grid-template-rows: 100px 20px;
+}
+

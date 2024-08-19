@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue test</title>
+
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="../lib/http_cdn.jsdelivr.net_npm_vue@2_dist_vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+
+<body>
+<div id="app">
+    <!-- my-load 就是我自定义的组件 -->
+    <my-load ></my-load>
+
+        <el-button type="primary" @click="open">主要按钮</el-button>
+
+</div>
+
+
+</body>
+</html>
+<script>
+    Vue.use(ElementUI)
+</script>
+<script src="my_component.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {},
+        mounted() {
+        },
+        methods: {},
+    })
+</script>
